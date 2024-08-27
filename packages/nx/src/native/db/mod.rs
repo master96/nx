@@ -10,10 +10,17 @@ use crate::native::machine_id::get_machine_id;
 pub fn connect_to_nx_db(
     cache_dir: String,
     nx_version: String,
+    db_name: Option<String>,
 ) -> anyhow::Result<External<Connection>> {
     let machine_id = get_machine_id();
     let cache_dir_buf = PathBuf::from(cache_dir);
-    let db_path = cache_dir_buf.join(format!("{}.db", machine_id));
+    let db_path = cache_dir_buf.join(format!(
+        "{}.db",
+        match db_name {
+            Some(name) => name,
+            None => machine_id,
+        }
+    ));
     create_dir_all(cache_dir_buf)?;
 
     let c = create_connection(&db_path)?;
