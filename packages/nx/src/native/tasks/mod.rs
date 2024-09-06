@@ -7,3 +7,4 @@ pub mod task_hasher;
 pub mod task_history;
 pub mod types;
 mod utils;
+mod hash_plan_inspector;

@@ -21,7 +21,7 @@ use crate::native::{
 };
 use anyhow::anyhow;
 use dashmap::DashMap;
-use napi::bindgen_prelude::{Buffer, External};
+use napi::bindgen_prelude::*;
 use rayon::prelude::*;
 use tracing::{debug, trace, trace_span};
 
@@ -175,21 +175,6 @@ impl TaskHasher {
                 trace!(parent: &span, "hash_workspace_files: {:?}", now.elapsed());
                 hashed_workspace_files?
             }
-            HashInstruction::Runtime(runtime) => {
-                let hashed_runtime = hash_runtime(
-                    &self.workspace_root,
-                    runtime,
-                    js_env,
-                    Arc::clone(&self.runtime_cache),
-                )?;
-                trace!(parent: &span, "hash_runtime: {:?}", now.elapsed());
-                hashed_runtime
-            }
-            HashInstruction::Environment(env) => {
-                let hashed_env = hash_env(env, js_env)?;
-                trace!(parent: &span, "hash_env: {:?}", now.elapsed());
-                hashed_env
-            }
             HashInstruction::ProjectFileSet(project_name, file_sets) => {
                 let project = self
                     .project_graph
@@ -204,6 +189,21 @@ impl TaskHasher {
                 )?;
                 trace!(parent: &span, "hash_project_files: {:?}", now.elapsed());
                 hashed_project_files
+            }
+            HashInstruction::Runtime(runtime) => {
+                let hashed_runtime = hash_runtime(
+                    &self.workspace_root,
+                    runtime,
+                    js_env,
+                    Arc::clone(&self.runtime_cache),
+                )?;
+                trace!(parent: &span, "hash_runtime: {:?}", now.elapsed());
+                hashed_runtime
+            }
+            HashInstruction::Environment(env) => {
+                let hashed_env = hash_env(env, js_env)?;
+                trace!(parent: &span, "hash_env: {:?}", now.elapsed());
+                hashed_env
             }
             HashInstruction::ProjectConfiguration(project_name) => {
                 let hashed_project_config =
