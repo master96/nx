@@ -3,6 +3,7 @@ use std::path::PathBuf;
 
 use napi::bindgen_prelude::External;
 use rusqlite::Connection;
+use tracing::trace;
 
 use crate::native::machine_id::get_machine_id;
 
@@ -14,6 +15,8 @@ pub fn connect_to_nx_db(
     let machine_id = get_machine_id();
     let cache_dir_buf = PathBuf::from(cache_dir);
     let db_path = cache_dir_buf.join(format!("{}.db", machine_id));
+
+    trace!("Ensuring {} exists", cache_dir_buf.display());
     create_dir_all(cache_dir_buf)?;
 
     let c = create_connection(&db_path)?;
@@ -31,6 +34,8 @@ pub fn connect_to_nx_db(
         Ok(version) if version == nx_version => c,
         _ => {
             c.close().map_err(|(_, error)| anyhow::Error::from(error))?;
+
+            trace!("Removing mismatched version of db at {:?}", db_path);
             remove_file(&db_path)?;
 
             create_connection(&db_path)?
@@ -54,7 +59,9 @@ pub fn connect_to_nx_db(
 }
 
 fn create_connection(db_path: &PathBuf) -> anyhow::Result<Connection> {
+    trace!("Creating connection to db at {:?}", db_path);
     let c = Connection::open(db_path).map_err(anyhow::Error::from)?;
+    trace!("Connection created");
 
     // This allows writes at the same time as reads
     c.pragma_update(None, "journal_mode", "WAL")?;
