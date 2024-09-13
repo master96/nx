@@ -10,7 +10,6 @@ use tracing::trace;
 
 use crate::native::cache::expand_outputs::_expand_outputs;
 use crate::native::cache::file_ops::_copy;
-use crate::native::machine_id::get_machine_id;
 use crate::native::utils::Normalize;
 
 #[napi(object)]
@@ -37,8 +36,7 @@ impl NxCache {
         cache_path: String,
         db_connection: External<Connection>,
     ) -> anyhow::Result<Self> {
-        let machine_id = get_machine_id();
-        let cache_path = PathBuf::from(&cache_path).join(machine_id);
+        let cache_path = PathBuf::from(&cache_path);
 
         create_dir_all(&cache_path)?;
         create_dir_all(cache_path.join("terminalOutputs"))?;

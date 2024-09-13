@@ -63,7 +63,7 @@ export class DbCache {
       if (/* { TODO: INSERT HAS POWERPACK CHECK HERE } */ true) {
         this.fallbackDbCache = new NxCache(
           workspaceRoot,
-          process.env.NX_SHARED_CACHE_DIRECTORY,
+          cacheDir,
           getDbConnection({
             dbName: 'shared',
             directory: cacheDir,
