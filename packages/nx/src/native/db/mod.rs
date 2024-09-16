@@ -12,14 +12,10 @@ pub fn connect_to_nx_db(
     nx_version: String,
     db_name: Option<String>,
 ) -> anyhow::Result<External<Connection>> {
-    let machine_id = get_machine_id();
     let cache_dir_buf = PathBuf::from(cache_dir);
     let db_path = cache_dir_buf.join(format!(
         "{}.db",
-        match db_name {
-            Some(name) => name,
-            None => machine_id,
-        }
+        db_name.unwrap_or_else(get_machine_id)
     ));
     create_dir_all(cache_dir_buf)?;
 
