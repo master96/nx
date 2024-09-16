@@ -51,6 +51,12 @@
         "description": "The vitest environment to use. See https://vitest.dev/config/#environment.",
         "type": "string",
         "enum": ["node", "jsdom", "happy-dom", "edge-runtime"]
+      },
+      "setUpPrettier": {
+        "type": "boolean",
+        "description": "Add Prettier and corresponding configuration files.",
+        "x-priority": "internal",
+        "default": false
       }
     },
     "required": ["project"],

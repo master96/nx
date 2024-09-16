@@ -366,7 +366,9 @@ NX_USERNAME=$FIRSTNAME $LASTNAME`
 
     const baseLib = 'lib-base-123';
     beforeAll(() => {
-      runCLI(`generate @nx/js:lib ${baseLib}`);
+      runCLI(
+        `generate @nx/js:lib ${baseLib} --linter=eslint --unitTestRunner=jest`
+      );
     });
 
     it('should correctly expand default task inputs', () => {
@@ -387,7 +389,9 @@ NX_USERNAME=$FIRSTNAME $LASTNAME`
 
     it('should correctly expand dependent task inputs', () => {
       const dependentLib = 'lib-dependent-123';
-      runCLI(`generate @nx/js:lib ${dependentLib}`);
+      runCLI(
+        `generate @nx/js:lib ${dependentLib} --linter=eslint --unitTestRunner=jest`
+      );
 
       updateJson(join('libs', baseLib, 'project.json'), (config) => {
         config.targets['build'].inputs = ['default', '^default'];

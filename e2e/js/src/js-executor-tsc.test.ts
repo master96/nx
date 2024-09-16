@@ -109,7 +109,9 @@ describe('js:tsc executor', () => {
     libBuildProcess.kill();
 
     const parentLib = uniq('parentlib');
-    runCLI(`generate @nx/js:lib ${parentLib} --bundler=tsc --no-interactive`);
+    runCLI(
+      `generate @nx/js:lib ${parentLib} --bundler=tsc --unitTestRunner=jest --no-interactive`
+    );
     const parentLibPackageJson = readJson(`libs/${parentLib}/package.json`);
     expect(parentLibPackageJson.scripts).toBeUndefined();
     expect((await runCLIAsync(`test ${parentLib}`)).combinedOutput).toContain(

@@ -34,7 +34,7 @@ export function vitestGenerator(
 ) {
   return vitestGeneratorInternal(
     tree,
-    { addPlugin: false, ...schema },
+    { addPlugin: false, setUpPrettier: true, ...schema },
     hasPlugin
   );
 }
